@@ -1,0 +1,35 @@
+service: addboi
+plugins:
+  - serverless-webpack
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: false
+provider:
+  name: aws
+  runtime: nodejs12.x
+  logRetentionInDays: 30
+  region: ap-southeast-1
+  memorySize: 512
+  stage: ${env:ENVIRONMENT}
+  timeout: 30
+  usagePlan:
+    throttle:
+      burstLimit: 20
+      rateLimit: 10
+functions:
+  core:
+    handler: src/index.handler
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+      - http:
+          path: /webhook/facebook
+          method: get
+          cors: true
+      - http:
+          path: /webhook/{platform}
+          method: post
+          cors: true
