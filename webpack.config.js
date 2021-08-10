@@ -7,10 +7,8 @@ const slsw = require("serverless-webpack");
 const { DefinePlugin } = require("webpack");
 const merge = require("webpack-merge");
 const parseArgs = require("yargs-parser");
-const {
-  constructEnvVars,
-} = require("./chatbot-engine/src/bootstrap/javascript-helper/build_utils");
-const getServerlessConfig = require("./chatbot-engine/src/bootstrap/javascript-helper/serverless/aws/webpack.config");
+const { constructEnvVars } = require("./javascript-helper/build_utils");
+const getServerlessConfig = require("./javascript-helper/serverless/aws/webpack.config");
 const { infrastructure } = parseArgs(process.argv);
 const { ENVIRONMENT = "local" } = process.env;
 

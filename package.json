@@ -48,6 +48,6 @@
   "workspaces": [
     "chatbot-engine",
     "chatbot-engine/src/bootstrap",
-    "chatbot-engine/src/bootstrap/javascript-helper"
+    "javascript-helper"
   ]
 }

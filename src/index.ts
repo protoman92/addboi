@@ -3,8 +3,8 @@ import createStateMachine from "client/state_machine";
 import express from "express";
 import { Context, ResolverArgs } from "interface";
 import createChatbotRouter from "../chatbot-engine/src/bootstrap";
-import serverless from "../chatbot-engine/src/bootstrap/javascript-helper/serverless/aws";
 import inMemoryContextDAO from "../chatbot-engine/src/context/InMemoryContextDAO";
+import serverless from "../javascript-helper/serverless/aws";
 
 const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
   getChatbotBootstrapArgs: () => ({

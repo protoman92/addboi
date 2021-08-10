@@ -26,8 +26,5 @@
     "strictPropertyInitialization": true,
     "target": "es2017"
   },
-  "exclude": [
-    "./node_modules/*",
-    "./chatbot-engine/src/bootstrap/javascript-helper/react"
-  ]
+  "exclude": ["./node_modules/*", "./javascript-helper/react"]
 }
