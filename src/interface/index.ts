@@ -3,6 +3,14 @@ import { DefaultLeafDependencies } from "../../chatbot-engine/src/bootstrap/inte
 import { Branch } from "../../chatbot-engine/src/type";
 export * from "../../chatbot-engine/src/type";
 
+declare global {
+  namespace NodeJS {
+    interface Process {
+      readonly env2: ProcessEnv;
+    }
+  }
+}
+
 export interface Context {
   readonly inputFlow?: Readonly<
     Calculator.Context & { inputType: "calculator" }

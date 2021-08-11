@@ -21,6 +21,8 @@ if (!!AWS_ACCESS_KEY_ID && !!AWS_SECRET_ACCESS_KEY) {
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
     region: "ap-southeast-1",
   });
+} else {
+  AWSConfig.update({ region: "ap-southeast-1" });
 }
 
 const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
@@ -55,6 +57,10 @@ const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
 
 const app = express();
 app.use(chatbotRouter);
+
+app.get("/env", (...[, res]) => {
+  res.json({ ...process.env, ...process.env2 });
+});
 
 app.get("/webhook/:platform", ({ params: { platform } }, res) => {
   res.send(`Webhook route for ${platform}`);

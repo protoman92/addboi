@@ -22,6 +22,10 @@ functions:
     handler: src/index.handler
     events:
       - http:
+          path: /env
+          method: get
+          cors: true
+      - http:
           path: /webhook/facebook
           method: get
           cors: true

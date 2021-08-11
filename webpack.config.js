@@ -83,7 +83,12 @@ module.exports = merge(
         tsconfig: path.join(__dirname, "tsconfig.json"),
       }),
       new DefinePlugin({
-        "process.env": Object.entries(extraEnv).reduce(
+        ...Object.entries(extraEnv).reduce(
+          (acc, [k, v]) =>
+            Object.assign(acc, { [`process.env.${k}`]: JSON.stringify(v) }),
+          {}
+        ),
+        "process.env2": Object.entries(extraEnv).reduce(
           (acc, [k, v]) => Object.assign(acc, { [k]: JSON.stringify(v) }),
           {}
         ),
