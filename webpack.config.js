@@ -7,6 +7,7 @@ const slsw = require("serverless-webpack");
 const { DefinePlugin } = require("webpack");
 const merge = require("webpack-merge");
 const parseArgs = require("yargs-parser");
+const chatbotBootstrapConfig = require("./chatbot-engine/src/bootstrap/webpack.config");
 const { constructEnvVars } = require("./javascript-helper/build_utils");
 const getServerlessConfig = require("./javascript-helper/serverless/aws/webpack.config");
 const { infrastructure } = parseArgs(process.argv);
@@ -41,43 +42,47 @@ const { ...extraEnv } = constructEnvVars({
 
 const rootFiles = fs.readdirSync(path.join(__dirname, "src"));
 
-module.exports = merge(serverlessConfig, {
-  module: {
-    rules: [
-      {
-        test: /src\/.*\/.*\.json$/,
-        loader: "file-loader",
-      },
-      {
-        test: /\.ts$/,
-        loader: "ts-loader",
-        options: { transpileOnly: true },
-      },
-    ],
-  },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.join(__dirname, "tsconfig.json"),
-    }),
-    new DefinePlugin({
-      "process.env": Object.entries(extraEnv).reduce(
-        (acc, [k, v]) => Object.assign(acc, { [k]: JSON.stringify(v) }),
-        {}
-      ),
-    }),
-  ],
-  resolve: {
-    ...serverlessResolve,
-    alias: {
-      ...serverlessResolve.alias,
-      ...rootFiles
-        .map(path.parse)
-        .reduce(
-          (acc, { name }) =>
-            Object.assign(acc, { [name]: path.join(__dirname, "src", name) }),
+module.exports = merge(
+  serverlessConfig,
+  chatbotBootstrapConfig({ env: ENVIRONMENT }),
+  {
+    module: {
+      rules: [
+        {
+          test: /src\/.*\/.*\.json$/,
+          loader: "file-loader",
+        },
+        {
+          test: /\.ts$/,
+          loader: "ts-loader",
+          options: { transpileOnly: true },
+        },
+      ],
+    },
+    plugins: [
+      new ForkTsCheckerWebpackPlugin({
+        tsconfig: path.join(__dirname, "tsconfig.json"),
+      }),
+      new DefinePlugin({
+        "process.env": Object.entries(extraEnv).reduce(
+          (acc, [k, v]) => Object.assign(acc, { [k]: JSON.stringify(v) }),
           {}
         ),
+      }),
+    ],
+    resolve: {
+      ...serverlessResolve,
+      alias: {
+        ...serverlessResolve.alias,
+        ...rootFiles
+          .map(path.parse)
+          .reduce(
+            (acc, { name }) =>
+              Object.assign(acc, { [name]: path.join(__dirname, "src", name) }),
+            {}
+          ),
+      },
+      extensions: [".ts", ".js", ".json"],
     },
-    extensions: [".ts", ".js", ".json"],
-  },
-});
+  }
+);

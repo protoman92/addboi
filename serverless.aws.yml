@@ -22,14 +22,22 @@ functions:
     handler: src/index.handler
     events:
       - http:
-          path: /
-          method: get
-          cors: true
-      - http:
           path: /webhook/facebook
           method: get
           cors: true
       - http:
           path: /webhook/{platform}
           method: post
+          cors: true
+      - http:
+          path: /webhook/{platform}
+          method: post
+          cors: true
+      - http:
+          path: /webhook/{platform}
+          method: get
+          cors: true
+      - http:
+          path: /context/{platform}/{id}
+          method: get
           cors: true

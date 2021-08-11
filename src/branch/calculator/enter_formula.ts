@@ -3,12 +3,14 @@ import { AmbiguousRequest, BranchCreator, Context } from "interface";
 import { CONSTANTS, createLeaf, NextResult } from "utils";
 import { computeFormula, isComputableFormula } from "./utils";
 
-const _: BranchCreator = async ({}) => {
+const _: BranchCreator = async ({ stateMachine }) => {
   function shouldComputeFormula({
     currentContext,
     input,
   }: AmbiguousRequest<Context>) {
-    const state = Calculator.State.ENTER_FORMULA;
+    const state: Calculator.State.ENTER_FORMULA =
+      Calculator.State.ENTER_FORMULA;
+
     let formula: string | undefined;
 
     if (
@@ -92,6 +94,12 @@ const _: BranchCreator = async ({}) => {
         await observer.next({
           targetID,
           targetPlatform,
+          additionalContext: {
+            inputFlow: {
+              inputType: "calculator",
+              state: await stateMachine.calculator.nextState(data.state),
+            },
+          },
           output: [{ content: { text: result.toString(), type: "text" } }],
         });
 
