@@ -8,7 +8,10 @@ const { DefinePlugin } = require("webpack");
 const merge = require("webpack-merge");
 const parseArgs = require("yargs-parser");
 const chatbotBootstrapConfig = require("./chatbot-engine/src/bootstrap/webpack.config");
-const { constructEnvVars } = require("./javascript-helper/build_utils");
+const {
+  constructEnvVars,
+  getLocalAWSCredentials,
+} = require("./javascript-helper/build_utils");
 const getServerlessConfig = require("./javascript-helper/serverless/aws/webpack.config");
 const { infrastructure } = parseArgs(process.argv);
 const { ENVIRONMENT = "local" } = process.env;
@@ -30,8 +33,24 @@ const { ...extraEnv } = constructEnvVars({
       debug: true,
       path: path.join(__dirname, `.env.${ENVIRONMENT}`),
     }).parsed,
+    ...(ENVIRONMENT === "local"
+      ? (() => {
+          const {
+            accessKeyId: AWS_ACCESS_KEY_ID,
+            secretAccessKey: AWS_SECRET_ACCESS_KEY,
+          } = getLocalAWSCredentials({
+            profile: "default",
+          });
+
+          return { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY };
+        })()
+      : {}),
   },
+  optionalKeys: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
   requiredKeys: [
+    "DYNAMO_DB_ENDPOINT",
+    "DYNAMO_DB_REGION",
+    "DYNAMO_DB_TABLE_NAME",
     "FACEBOOK_API_VERSION",
     "FACEBOOK_PAGE_TOKEN",
     "TELEGRAM_AUTH_TOKEN",

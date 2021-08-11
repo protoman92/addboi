@@ -1,3 +1,4 @@
+import { config as AWSConfig } from "aws-sdk";
 import createBranches from "branch";
 import createStateMachine from "client/state_machine";
 import express from "express";
@@ -8,13 +9,23 @@ import {
   setTypingIndicator,
 } from "utils";
 import createChatbotRouter from "../chatbot-engine/src/bootstrap";
-import inMemoryContextDAO from "../chatbot-engine/src/context/InMemoryContextDAO";
+import dynamoDBContextDAO from "../chatbot-engine/src/context/DynamoDBContextDAO";
 import createLogger from "../javascript-helper/client/logger";
 import serverless from "../javascript-helper/serverless/aws";
 
+const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
+
+if (!!AWS_ACCESS_KEY_ID && !!AWS_SECRET_ACCESS_KEY) {
+  AWSConfig.update({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    region: "ap-southeast-1",
+  });
+}
+
 const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
   getChatbotBootstrapArgs: ({ facebookClient, telegramClient }) => {
-    const contextDAO = inMemoryContextDAO<Context>();
+    const { contextDAO } = dynamoDBContextDAO<Context>();
     const logger = createLogger();
 
     return {

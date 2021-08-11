@@ -4,3 +4,6 @@
 [submodule "javascript-helper"]
 	path = javascript-helper
 	url = https://github.com/protoman92/javascript-helper.git
+[submodule "infrastructure/terraform-helper"]
+	path = infrastructure/terraform-helper
+	url = https://github.com/protoman92/terraform-helper.git

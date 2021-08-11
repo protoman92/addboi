@@ -1,4 +1,7 @@
 .env.*
+.idea
 .serverless
+.terraform
+*.tfstate
 build
 node_modules
