@@ -38,9 +38,7 @@ const { ...extraEnv } = constructEnvVars({
           const {
             accessKeyId: AWS_ACCESS_KEY_ID,
             secretAccessKey: AWS_SECRET_ACCESS_KEY,
-          } = getLocalAWSCredentials({
-            profile: "default",
-          });
+          } = getLocalAWSCredentials({ profile: "default" });
 
           return { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY };
         })()
@@ -53,6 +51,7 @@ const { ...extraEnv } = constructEnvVars({
     "DYNAMO_DB_TABLE_NAME",
     "FACEBOOK_API_VERSION",
     "FACEBOOK_PAGE_TOKEN",
+    "INTERNAL_TOKEN",
     "TELEGRAM_AUTH_TOKEN",
     "TELEGRAM_WEBHOOK_URL",
     "WIT_AUTHORIZATION_TOKEN",

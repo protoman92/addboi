@@ -15,6 +15,8 @@ export interface Context {
   readonly inputFlow?: Readonly<
     Calculator.Context & { inputType: "calculator" }
   >;
+  /** Refers to the original user object we receive from Facebook/Telegram etc */
+  readonly platformUser?: unknown;
 }
 
 export interface ResolverArgs extends DefaultLeafDependencies<Context> {

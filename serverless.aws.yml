@@ -22,7 +22,7 @@ functions:
     handler: src/index.handler
     events:
       - http:
-          path: /env
+          path: /internal/env
           method: get
           cors: true
       - http:

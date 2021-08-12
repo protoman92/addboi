@@ -10,6 +10,7 @@ export * from "../chatbot-engine/src/stream";
 export const CONSTANTS = {
   COMMAND_CALCULATE: "calculate",
   COMMAND_START: "start",
+  HEADER_INTERNAL_TOKEN: "X-Internal-Token",
 };
 
 export function roundAmount(amount: number) {
