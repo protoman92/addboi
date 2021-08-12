@@ -49,7 +49,7 @@ const _: BranchCreator = async ({ stateMachine }) => {
                 content: {
                   text: `
 Stored as variable "${CONSTANTS.VARIABLE_NAME_FIXED}". You can use it like <b>(${CONSTANTS.VARIABLE_NAME_FIXED} + 1) * 2</b>.
-This message will no longer be shown next time.`,
+`.trim(),
                   type: "text",
                 },
               },

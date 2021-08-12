@@ -7,11 +7,15 @@ import {
   NextResult,
   Postback,
 } from "utils";
-import { computeFormula, isComputableFormula } from "./utils";
+import {
+  computeFormula,
+  isComputableFormula,
+  substituteVariablesIntoFormula,
+} from "./utils";
 
 const _: BranchCreator = async ({ stateMachine }) => {
   function shouldComputeFormula({
-    currentContext,
+    currentContext: { inputFlow, variables },
     input,
   }: AmbiguousRequest<Context>) {
     const state: Calculator.State.ENTER_FORMULA =
@@ -28,14 +32,21 @@ const _: BranchCreator = async ({ stateMachine }) => {
     }
 
     if (
-      currentContext.inputFlow?.state === Calculator.State.ENTER_FORMULA &&
+      inputFlow?.state === Calculator.State.ENTER_FORMULA &&
       input.type === "text" &&
       !!(formula = input.text)
     ) {
       return { formula, state };
     }
 
-    if (input.type === "text" && isComputableFormula((formula = input.text))) {
+    if (
+      input.type === "text" &&
+      !!(formula = substituteVariablesIntoFormula({
+        variables,
+        formula: input.text,
+      })) &&
+      isComputableFormula(formula)
+    ) {
       return { formula, state };
     }
 
