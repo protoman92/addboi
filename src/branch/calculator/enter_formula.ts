@@ -1,6 +1,12 @@
 import { Calculator } from "client/state_machine";
 import { AmbiguousRequest, BranchCreator, Context } from "interface";
-import { CONSTANTS, createLeaf, NextResult } from "utils";
+import {
+  CONSTANTS,
+  createLeaf,
+  getCrossPlatformOutput,
+  NextResult,
+  Postback,
+} from "utils";
 import { computeFormula, isComputableFormula } from "./utils";
 
 const _: BranchCreator = async ({ stateMachine }) => {
@@ -79,12 +85,7 @@ const _: BranchCreator = async ({ stateMachine }) => {
             targetID,
             targetPlatform,
             output: [
-              {
-                content: {
-                  text: "Not a valid formula",
-                  type: "text",
-                },
-              },
+              { content: { text: "Not a valid formula", type: "text" } },
             ],
           });
 
@@ -100,7 +101,30 @@ const _: BranchCreator = async ({ stateMachine }) => {
               state: await stateMachine.calculator.nextState(data.state),
             },
           },
-          output: [{ content: { text: result.toString(), type: "text" } }],
+          output: getCrossPlatformOutput({
+            telegram: [
+              {
+                content: { text: result.toString(), type: "text" },
+                quickReplies: {
+                  content: [
+                    [
+                      // {
+                      //   payload: Postback.storeResultAsVariable(result),
+                      //   text: "Store as a variable",
+                      //   type: "postback",
+                      // },
+                      {
+                        payload: Postback.storeResultAsFixedVariable(result),
+                        text: `Store as variable "${CONSTANTS.VARIABLE_NAME_FIXED}"`,
+                        type: "postback",
+                      },
+                    ],
+                  ],
+                  type: "inline_markup",
+                },
+              },
+            ],
+          })(targetPlatform),
         });
 
         return NextResult.BREAK;

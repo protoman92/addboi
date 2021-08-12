@@ -17,6 +17,7 @@ export interface Context {
   >;
   /** Refers to the original user object we receive from Facebook/Telegram etc */
   readonly platformUser?: unknown;
+  readonly variables?: Record<string, number>;
 }
 
 export interface ResolverArgs extends DefaultLeafDependencies<Context> {
