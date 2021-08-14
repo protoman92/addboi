@@ -1,6 +1,7 @@
 import { BranchCreator } from "interface";
 import { createLeaf, NextResult } from "utils";
 import validator from "validator";
+import { extractNumbersFromImageContents } from "./utils";
 
 const _: BranchCreator = async ({
   cloudVision,
@@ -45,15 +46,25 @@ const _: BranchCreator = async ({
           return NextResult.FALLTHROUGH;
         }
 
-        const imageContents = await cloudVision.annotateImage({
+        const [imageContent] = await cloudVision.annotateImage({
           imageURL: imageURLToScan,
         });
+
+        const numbersInImage = extractNumbersFromImageContents([imageContent]);
 
         await observer.next({
           targetID,
           targetPlatform,
           output: [
-            { content: { text: imageContents.join("\n"), type: "text" } },
+            {
+              content: {
+                text: `
+Is this what you wanted to calculate?
+${numbersInImage.join(" + ")}
+            `,
+                type: "text",
+              },
+            },
           ],
         });
 

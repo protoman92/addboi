@@ -2,6 +2,30 @@ import { Parser } from "expr-eval";
 import { Context } from "interface";
 import { roundAmount } from "utils";
 
+export function extractNumbersFromImageContents(contents: readonly string[]) {
+  const numbers: number[] = [];
+
+  for (const content of contents) {
+    const numberMatches = content.match(/(\d+\.?\d*)/g);
+
+    if (numberMatches == null) {
+      continue;
+    }
+
+    for (const numberMatch of numberMatches) {
+      const matchedNumber = parseFloat(numberMatch);
+
+      if (isNaN(matchedNumber)) {
+        continue;
+      }
+
+      numbers.push(matchedNumber);
+    }
+  }
+
+  return numbers;
+}
+
 export function isComputableFormula(formula: string) {
   return (
     !!formula &&
