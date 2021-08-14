@@ -58,6 +58,7 @@ const { ...extraEnv } = constructEnvVars({
   },
   optionalKeys: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
   requiredKeys: [
+    "CLOUD_VISION_TEXT_ANNOTATION_URL",
     "AWS_ASSET_BUCKET_NAME",
     "DYNAMO_DB_ENDPOINT",
     "DYNAMO_DB_REGION",

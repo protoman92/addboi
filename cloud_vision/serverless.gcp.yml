@@ -1,6 +1,11 @@
 service: cloud-vision
 plugins:
   - serverless-google-cloudfunctions
+  - serverless-webpack
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
 provider:
   name: google
   stage: ${env:ENVIRONMENT}
