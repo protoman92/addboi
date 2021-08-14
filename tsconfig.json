@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": false,
     "alwaysStrict": true,
-    "baseUrl": "src",
     "checkJs": false,
     "esModuleInterop": true,
     "module": "commonjs",
@@ -14,9 +13,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "outDir": "build",
-    "paths": {
-      "*": ["*"]
-    },
     "resolveJsonModule": true,
     "skipLibCheck": false,
     "strict": true,

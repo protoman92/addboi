@@ -11,11 +11,11 @@ import {
   saveTelegramUser,
   setTypingIndicator,
 } from "utils";
-import createChatbotRouter from "../chatbot-engine/src/bootstrap";
-import dynamoDBContextDAO from "../chatbot-engine/src/context/DynamoDBContextDAO";
-import createLogger from "../javascript-helper/client/logger";
-import serverless from "../javascript-helper/serverless/aws";
-import { analyzeError } from "../javascript-helper/utils";
+import createChatbotRouter from "../../chatbot-engine/src/bootstrap";
+import dynamoDBContextDAO from "../../chatbot-engine/src/context/DynamoDBContextDAO";
+import createLogger from "../../javascript-helper/client/logger";
+import serverless from "../../javascript-helper/serverless/aws";
+import { analyzeError } from "../../javascript-helper/utils";
 
 if (!!process.env.AWS_ACCESS_KEY_ID && !!process.env.AWS_SECRET_ACCESS_KEY) {
   AWSConfig.update({

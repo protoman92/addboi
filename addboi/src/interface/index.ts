@@ -1,7 +1,7 @@
 import { Calculator } from "client/state_machine";
-import { DefaultLeafDependencies } from "../../chatbot-engine/src/bootstrap/interface";
-import { Branch } from "../../chatbot-engine/src/type";
-export * from "../../chatbot-engine/src/type";
+import { DefaultLeafDependencies } from "../../../chatbot-engine/src/bootstrap/interface";
+import { Branch } from "../../../chatbot-engine/src/type";
+export * from "../../../chatbot-engine/src/type";
 
 declare global {
   namespace NodeJS {

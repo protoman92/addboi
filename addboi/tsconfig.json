@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "*": ["*"]
+    },
+    "target": "es2017"
+  },
+  "extends": "../tsconfig.json"
+}
