@@ -14,32 +14,40 @@ data "aws_iam_policy" "AmazonDynamoDBFullAccess" {
 //  provider = aws.ap-southeast-1
 //}
 
-resource "aws_iam_policy" "dynamodb_policy" {
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+resource "aws_iam_policy" "chatbot_iam_policy" {
+  policy = jsondecode(
     {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:BatchGetItem",
-        "dynamodb:GetItem",
-        "dynamodb:Query",
-        "dynamodb:Scan",
-        "dynamodb:BatchWriteItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem"
-      ],
-      "Resource": "${module.ddb_user_context_cache.dynamodb_table_arn}"
+      Version : "2012-10-17",
+      Statement : [
+        {
+          Effect : "Allow",
+          Action : [
+            "dynamodb:BatchGetItem",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem"
+          ],
+          Resource : module.ddb_user_context_cache.dynamodb_table_arn
+        },
+        {
+          Effect : "Allow",
+          Action : [
+            "s3:PutObject",
+          ],
+          Resource : data.aws_s3_bucket.public_asset.arn
+        }
+      ]
     }
-  ]
-}
-EOF
+  )
+
   provider = aws.ap-southeast-1
 }
 
-resource "aws_iam_role_policy_attachment" "chatbot_dynamodb" {
-  policy_arn = aws_iam_policy.dynamodb_policy.arn
+resource "aws_iam_role_policy_attachment" "chatbot_iam_policy_attachment" {
+  policy_arn = aws_iam_policy.chatbot_iam_policy.arn
   role       = data.aws_iam_role.chatbot_iam_role.name
-  provider = aws.ap-southeast-1
+  provider   = aws.ap-southeast-1
 }
