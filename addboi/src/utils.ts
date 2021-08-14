@@ -10,6 +10,7 @@ export * from "../../chatbot-engine/src/stream";
 export const CONSTANTS = {
   COMMAND_CALCULATE: "calculate",
   COMMAND_START: "start",
+  DATE_FORM_IMAGE_NAME: "DD-MM-YY-HH-mm-ss",
   HEADER_INTERNAL_TOKEN: "X-Internal-Token",
   POSTBACK_STORE_RESULT_AS_FIXED_VARIABLE: "storeresultfixed",
   POSTBACK_STORE_RESULT_AS_VARIABLE: "storeresult",

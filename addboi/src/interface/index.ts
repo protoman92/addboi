@@ -21,6 +21,12 @@ export interface Context {
 }
 
 export interface ResolverArgs extends DefaultLeafDependencies<Context> {
+  readonly cloudVision: ReturnType<
+    typeof import("client/cloud_vision")["default"]
+  >;
+  readonly imageClient: ReturnType<
+    typeof import("client/image_client")["default"]
+  >;
   readonly stateMachine: ReturnType<
     typeof import("client/state_machine")["default"]
   >;

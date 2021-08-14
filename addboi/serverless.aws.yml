@@ -26,6 +26,10 @@ functions:
           method: get
           cors: true
       - http:
+          path: /internal/env/{key}
+          method: get
+          cors: true
+      - http:
           path: /webhook/facebook
           method: get
           cors: true

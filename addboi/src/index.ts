@@ -1,5 +1,7 @@
 import { config as AWSConfig } from "aws-sdk";
 import createBranches from "branch";
+import createCloudVisionClient from "client/cloud_vision";
+import createImageClient from "client/image_client";
 import createStateMachine from "client/state_machine";
 import express from "express";
 import { Context, ResolverArgs } from "interface";
@@ -36,7 +38,9 @@ const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
     return {
       contextDAO,
       createBranches,
+      cloudVision: createCloudVisionClient(),
       formatErrorMessage: (error) => error.message,
+      imageClient: createImageClient({ facebookClient, telegramClient }),
       leafSelectorType: "default",
       onLeafCatchAll: async () => {},
       onWebhookError: async ({ error, ...meta }) => {
@@ -106,6 +110,20 @@ app.use(
 app.get("/internal/env", (...[, res]) => {
   res.json({ ...process.env, ...process.env2 });
 });
+
+app.get(
+  "/internal/env/:key",
+  (
+    ...[
+      {
+        params: { key },
+      },
+      res,
+    ]
+  ) => {
+    res.send(process.env2[key]);
+  }
+);
 
 app.get("/webhook/:platform", ({ params: { platform } }, res) => {
   res.send(`Webhook route for ${platform}`);

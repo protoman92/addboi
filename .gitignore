@@ -3,6 +3,8 @@
 .serverless
 .terraform
 *.tfstate
+*.tfstate.*
+*.tfvars
 build
 credential
 node_modules
