@@ -1,7 +1,7 @@
 import { TextAnnotationResult } from "../../../cloud_vision/interface";
 import createAuthClient from "../../../javascript-helper/client/google_svc_acct_auth_client";
 
-function createCloudVisionClient() {
+export default function createCloudVisionClient() {
   const authClient = createAuthClient({
     scopes: ["https://www.googleapis.com/auth/cloud-vision"],
   });
@@ -39,5 +39,3 @@ function createCloudVisionClient() {
     },
   };
 }
-
-export default createCloudVisionClient();

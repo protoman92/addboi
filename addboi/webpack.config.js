@@ -33,6 +33,18 @@ const { ...extraEnv } = constructEnvVars({
       debug: true,
       path: path.join(__dirname, `.env.${ENVIRONMENT}`),
     }).parsed,
+    AWS_ASSET_BUCKET_NAME: "addboi-global-asset-origin",
+    AWS_ASSET_CDN_HOST: "https://d1dpjthkmhky3z.cloudfront.net",
+    GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: fs
+      .readFileSync(
+        path.join(
+          __dirname,
+          "..",
+          "credential",
+          "google_service_account_credentials.json"
+        )
+      )
+      .toString("utf-8"),
     ...(ENVIRONMENT === "local"
       ? (() => {
           const {
@@ -46,9 +58,11 @@ const { ...extraEnv } = constructEnvVars({
   },
   optionalKeys: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
   requiredKeys: [
+    "AWS_ASSET_BUCKET_NAME",
     "DYNAMO_DB_ENDPOINT",
     "DYNAMO_DB_REGION",
     "DYNAMO_DB_TABLE_NAME",
+    "GOOGLE_SERVICE_ACCOUNT_CREDENTIALS",
     "FACEBOOK_API_VERSION",
     "FACEBOOK_PAGE_TOKEN",
     "INTERNAL_TOKEN",
