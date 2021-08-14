@@ -1,0 +1,10 @@
+{
+  "name": "cloud-vision",
+  "scripts": {
+    "deploy:prod": "cross-env ENVIRONMENT=production sls deploy --config serverless.gcp.yml"
+  },
+  "version": "1.0.0",
+  "dependencies": {
+    "@google-cloud/vision": "2.3.7"
+  }
+}

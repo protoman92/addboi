@@ -1,10 +1,11 @@
 {
   "author": "Hai Pham <swiften.svc@gmail.com>",
-  "dependencies": {},
   "devDependencies": {
     "cross-env": "7.0.2",
     "fork-ts-checker-webpack-plugin": "4.1.4",
     "nodemon": "*",
+    "serverless": "*",
+    "serverless-google-cloudfunctions": "4.3.0",
     "serverless-webpack": "5.3.4",
     "ts-essentials": "*",
     "ts-loader": "7.0.4",
@@ -23,6 +24,7 @@
     "@types/webpack": "4.41.30",
     "express": "4.17.1",
     "nodemon": "2.0.4",
+    "serverless": "2.54.0",
     "ts-essentials": "7.0.1",
     "typescript": "4.3.2",
     "webpack": "4.46.0",
@@ -40,6 +42,7 @@
     "addboi",
     "chatbot-engine",
     "chatbot-engine/src/bootstrap",
+    "cloud_vision",
     "javascript-helper"
   ]
 }

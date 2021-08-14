@@ -7,7 +7,7 @@
   "devDependencies": {},
   "name": "addboi",
   "scripts": {
-    "deploy:prod": "cross-env ENVIRONMENT=production sls deploy --config ./serverless.aws.yml --infrastructure serverless",
+    "deploy:prod": "cross-env ENVIRONMENT=production sls deploy --config serverless.aws.yml --infrastructure serverless",
     "nodemon": "nodemon",
     "start": "yarn start:server",
     "start:server": "webpack --watch --infrastructure server",

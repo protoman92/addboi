@@ -1,0 +1,22 @@
+service: cloud-vision
+plugins:
+  - serverless-google-cloudfunctions
+provider:
+  name: google
+  stage: ${env:ENVIRONMENT}
+  runtime: nodejs12
+  region: asia-southeast2
+  project: addboi
+  credentials: ../credential/google_service_account_credentials.json
+  memorySize: 512
+  timeout: 300s
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
+functions:
+  cloudVisionTextAnnotation:
+    handler: cloudVisionTextAnnotation
+    events:
+      - http: path
