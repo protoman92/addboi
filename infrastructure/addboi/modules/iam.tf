@@ -35,7 +35,8 @@ resource "aws_iam_policy" "chatbot_iam_policy" {
         {
           Effect = "Allow"
           Action = [
-            "s3:*",
+            "s3:GetObject",
+            "s3:PutObject"
           ]
           Resource = [
             data.aws_s3_bucket.asset.arn,

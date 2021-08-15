@@ -109,12 +109,16 @@ app.get("/internal/asset/*", async ({ url }, res, next) => {
   try {
     const objectKey = url.slice("/internal/asset/".length);
 
-    const { Body, ContentType } = await chatbotDependencies.s3
+    const { Body, ContentLength, ContentType } = await chatbotDependencies.s3
       .getObject({
         Bucket: process.env.AWS_ASSET_BUCKET_NAME || "",
         Key: objectKey,
       })
       .promise();
+
+    if (ContentLength != null) {
+      res.setHeader("Content-Length", ContentLength);
+    }
 
     if (!!ContentType) {
       res.setHeader("Content-Type", ContentType);
