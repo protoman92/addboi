@@ -18,22 +18,14 @@ const _: BranchCreator = async ({ stateMachine }) => {
     currentContext: { inputFlow, variables },
     input,
   }: AmbiguousRequest<Context>) {
-    const state: Calculator.State.ENTER_FORMULA =
-      Calculator.State.ENTER_FORMULA;
+    const state: Calculator.State.COMPUTE_FORMULA =
+      Calculator.State.COMPUTE_FORMULA;
 
     let formula: string | undefined;
 
     if (
       input.type === "command" &&
       input.command === CONSTANTS.COMMAND_CALCULATE &&
-      !!(formula = input.text)
-    ) {
-      return { formula, state };
-    }
-
-    if (
-      inputFlow?.state === Calculator.State.ENTER_FORMULA &&
-      input.type === "text" &&
       !!(formula = input.text)
     ) {
       return { formula, state };
@@ -50,36 +42,19 @@ const _: BranchCreator = async ({ stateMachine }) => {
       return { formula, state };
     }
 
+    if (
+      input.type === "postback" &&
+      input.payload === CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE &&
+      inputFlow?.state === Calculator.State.COMPUTE_FORMULA &&
+      !!(formula = inputFlow.formulaToCompute)
+    ) {
+      return { formula, state };
+    }
+
     return undefined;
   }
 
   return {
-    onEnterFormulaTrigger: await createLeaf(async (observer) => ({
-      next: async ({ input, targetID, targetPlatform }) => {
-        if (
-          input.type !== "context_change" ||
-          input.changedContext.inputFlow?.state !==
-            Calculator.State.ENTER_FORMULA
-        ) {
-          return NextResult.FALLTHROUGH;
-        }
-
-        await observer.next({
-          targetID,
-          targetPlatform,
-          output: [
-            {
-              content: {
-                text: "Enter formula to calculate:",
-                type: "text",
-              },
-            },
-          ],
-        });
-
-        return NextResult.BREAK;
-      },
-    })),
     computeFormula: await createLeaf(async (observer) => ({
       next: async (request) => {
         const { targetID, targetPlatform } = request;

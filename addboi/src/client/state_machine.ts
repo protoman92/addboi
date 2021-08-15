@@ -1,20 +1,20 @@
 export namespace Calculator {
   export interface ProduceNextState {
-    (state: State.STARTED): Promise<State.ENTER_FORMULA>;
-    (state: State.ENTER_FORMULA): Promise<State.COMPLETED>;
+    (state: State.STARTED): Promise<State.COMPUTE_FORMULA>;
+    (state: State.COMPUTE_FORMULA): Promise<State.COMPLETED>;
     (state: State.STORE_FIXED_VARIABLE): Promise<State.COMPLETED>;
   }
 
   export enum State {
     STARTED = "CALC_STARTED",
-    ENTER_FORMULA = "CALC_ENTER_FORMULA",
+    COMPUTE_FORMULA = "CALC_COMPUTE_FORMULA",
     STORE_FIXED_VARIABLE = "CALC_STORE_FIXED_VARIABLE",
     COMPLETED = "CALC_COMPLETED",
   }
 
   export type Context = Readonly<
     | { state: State.STARTED }
-    | { state: State.ENTER_FORMULA }
+    | { state: State.COMPUTE_FORMULA; formulaToCompute?: string }
     | { state: State.STORE_FIXED_VARIABLE }
     | { state: State.COMPLETED }
   >;
@@ -27,9 +27,9 @@ export default function createStateMachine() {
         nextState: (async (state: Calculator.State) => {
           switch (state) {
             case Calculator.State.STARTED:
-              return Calculator.State.ENTER_FORMULA;
+              return Calculator.State.COMPUTE_FORMULA;
 
-            case Calculator.State.ENTER_FORMULA:
+            case Calculator.State.COMPUTE_FORMULA:
             case Calculator.State.STORE_FIXED_VARIABLE:
             case Calculator.State.COMPLETED:
               return Calculator.State.COMPLETED;
