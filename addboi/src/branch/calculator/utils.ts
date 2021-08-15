@@ -7,6 +7,8 @@ export function extractNumbersFromImageContents(contents: readonly string[]) {
 
   for (const content of contents) {
     const numberMatches = content
+      /** Remove numbering */
+      .replace(/(\d+)\)/, "")
       /** Remove timestamps */
       .replace(/(\d{1,2}:\d{1,2}\s?([AP]M)?)/g, "")
       .match(/(\d+\.?\d*)/g);

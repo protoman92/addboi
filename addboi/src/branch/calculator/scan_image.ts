@@ -42,10 +42,37 @@ const _: BranchCreator = async ({
       },
     })),
     scanImage: await createLeaf(async (observer) => ({
-      next: async ({ input, targetID, targetPlatform }) => {
+      next: async (request) => {
+        const { targetID, targetPlatform } = request;
+        let telegramFileID: string | undefined;
         let imageURLToScan: string | undefined;
+        let isImageCompressed: boolean | undefined;
 
-        if (input.type === "image") {
+        if (
+          (request.targetPlatform === "telegram" &&
+            request.input.type === "image" &&
+            !!(telegramFileID = request.input.images[0].file_id) &&
+            !!(isImageCompressed = true)) ||
+          (request.input.type === "document" &&
+            !!(telegramFileID = request.input.document.file_id))
+        ) {
+          const { fileURL } = await imageClient.uploadImageToCommonStorage({
+            targetID,
+            targetPlatform,
+            imageURL: await telegramClient.getFileURLFromID(telegramFileID),
+          });
+
+          imageURLToScan = fileURL;
+        } else if (
+          request.input.type === "text" &&
+          validator.isURL(request.input.text)
+        ) {
+          imageURLToScan = request.input.text;
+        } else {
+          return NextResult.FALLTHROUGH;
+        }
+
+        if (isImageCompressed) {
           await observer.next({
             targetID,
             targetPlatform,
@@ -53,29 +80,12 @@ const _: BranchCreator = async ({
               {
                 content: {
                   text:
-                    "Please send the image as a document, instead of a photo",
+                    "Looks like you sent a compressed image. The scan result will not be as accurate.",
                   type: "text",
                 },
               },
             ],
           });
-
-          return NextResult.BREAK;
-        } else if (input.type === "document") {
-          const { file_id } = input.document;
-          const telegramURL = await telegramClient.getFileURLFromID(file_id);
-
-          const { fileURL } = await imageClient.uploadImageToCommonStorage({
-            targetID,
-            targetPlatform,
-            imageURL: telegramURL,
-          });
-
-          imageURLToScan = fileURL;
-        } else if (input.type === "text" && validator.isURL(input.text)) {
-          imageURLToScan = input.text;
-        } else {
-          return NextResult.FALLTHROUGH;
         }
 
         const [imageContent] = await cloudVision.annotateImage({

@@ -9,5 +9,7 @@ describe("Utilities", () => {
       3,
       4,
     ]);
+
+    expect(extractNumbersFromImageContents(["1)12310:30AM"])).toEqual([123]);
   });
 });
