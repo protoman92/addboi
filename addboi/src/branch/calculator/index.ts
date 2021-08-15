@@ -6,10 +6,10 @@ import createTriggerCalculatorBranch from "./trigger_calculator";
 
 const _: BranchCreator = async (args) => {
   return {
-    ...(await createTriggerCalculatorBranch(args)),
-    ...(await createEnterFormulaBranch(args)),
-    ...(await createScanImageBranch(args)),
-    ...(await createStoreVariableBranch(args)),
+    triggerCalculator: await createTriggerCalculatorBranch(args),
+    enterFormula: await createEnterFormulaBranch(args),
+    scanImage: await createScanImageBranch(args),
+    storeVariable: await createStoreVariableBranch(args),
   };
 };
 

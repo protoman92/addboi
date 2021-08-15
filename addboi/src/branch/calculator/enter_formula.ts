@@ -43,10 +43,10 @@ const _: BranchCreator = async ({ stateMachine }) => {
     }
 
     if (
-      input.type === "postback" &&
-      input.payload === CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE &&
-      inputFlow?.state === Calculator.State.COMPUTE_FORMULA &&
-      !!(formula = inputFlow.formulaToCompute)
+      input.type === "context_change" &&
+      input.changedContext.inputFlow?.state ===
+        Calculator.State.COMPUTE_FORMULA &&
+      !!(formula = input.changedContext.inputFlow.formulaToCompute)
     ) {
       return { formula, state };
     }
