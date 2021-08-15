@@ -80,7 +80,7 @@ const _: BranchCreator = async ({
               {
                 content: {
                   text:
-                    "Looks like you sent a compressed image. The scan result will not be as accurate.",
+                    "Looks like you sent a compressed image instead of a document. The scan result will not be as accurate.",
                   type: "text",
                 },
               },
@@ -105,32 +105,35 @@ const _: BranchCreator = async ({
               state: Calculator.State.SCAN_IMAGE,
             },
           },
-          output: getCrossPlatformOutput({
-            telegram: [
-              {
-                content: {
-                  text: `
-Is this what you wanted to calculate?
-${formulaToCompute}
-            `.trim(),
-                  type: "text",
-                },
-                quickReplies: {
-                  content: [
-                    [
-                      {
-                        payload:
-                          CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE,
-                        text: "Yes",
-                        type: "postback",
-                      },
-                    ],
-                  ],
-                  type: "inline_markup",
-                },
+          output: [
+            {
+              content: {
+                text:
+                  "Is this what you wanted to calculate? If not, you can copy the below text, edit it and send as a new formula",
+                type: "text",
               },
-            ],
-          })(targetPlatform),
+            },
+            ...getCrossPlatformOutput({
+              telegram: [
+                {
+                  content: { text: formulaToCompute, type: "text" },
+                  quickReplies: {
+                    content: [
+                      [
+                        {
+                          payload:
+                            CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE,
+                          text: "Yes",
+                          type: "postback",
+                        },
+                      ],
+                    ],
+                    type: "inline_markup",
+                  },
+                },
+              ],
+            })(targetPlatform),
+          ],
         });
 
         return NextResult.BREAK;
