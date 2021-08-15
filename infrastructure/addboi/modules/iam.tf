@@ -1,5 +1,5 @@
 data "aws_iam_role" "chatbot_iam_role" {
-  name     = "${local.service}-${var.stage}-ap-southeast-1-lambdaRole"
+  name     = "${local.service}-${var.stage}-${local.region}-lambdaRole"
   provider = aws.ap-southeast-1
 }
 
@@ -15,13 +15,13 @@ data "aws_iam_policy" "AmazonDynamoDBFullAccess" {
 //}
 
 resource "aws_iam_policy" "chatbot_iam_policy" {
-  policy = jsondecode(
+  policy = jsonencode(
     {
-      Version : "2012-10-17",
-      Statement : [
+      Version = "2012-10-17"
+      Statement = [
         {
-          Effect : "Allow",
-          Action : [
+          Effect = "Allow"
+          Action = [
             "dynamodb:BatchGetItem",
             "dynamodb:GetItem",
             "dynamodb:Query",
@@ -29,15 +29,18 @@ resource "aws_iam_policy" "chatbot_iam_policy" {
             "dynamodb:BatchWriteItem",
             "dynamodb:PutItem",
             "dynamodb:UpdateItem"
-          ],
-          Resource : module.ddb_user_context_cache.dynamodb_table_arn
+          ]
+          Resource = module.ddb_user_context_cache.dynamodb_table_arn
         },
         {
-          Effect : "Allow",
-          Action : [
-            "s3:PutObject",
-          ],
-          Resource : data.aws_s3_bucket.public_asset.arn
+          Effect = "Allow"
+          Action = [
+            "s3:*",
+          ]
+          Resource = [
+            data.aws_s3_bucket.asset.arn,
+            "${data.aws_s3_bucket.asset.arn}/*"
+          ]
         }
       ]
     }

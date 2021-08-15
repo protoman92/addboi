@@ -8,15 +8,15 @@ import { CONSTANTS } from "utils";
 
 interface ImageClientArgs {
   readonly facebookClient: FacebookClient;
+  readonly s3: S3;
   readonly telegramClient: TelegramClient;
 }
 
 export default function createImageClient({
   facebookClient,
+  s3,
   telegramClient,
 }: ImageClientArgs) {
-  const s3Client = new S3({ region: "ap-southeast-1" });
-
   function getPhotoKeyPath({
     extension,
     targetID,
@@ -46,7 +46,7 @@ export default function createImageClient({
       responseType: "stream",
     });
 
-    await s3Client
+    await s3
       .upload({
         Body: fileStream,
         Bucket: process.env.AWS_ASSET_BUCKET_NAME || "",

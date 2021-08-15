@@ -22,6 +22,10 @@ functions:
     handler: src/index.handler
     events:
       - http:
+          path: /internal/asset/{key+}
+          method: get
+          cors: true
+      - http:
           path: /internal/env
           method: get
           cors: true

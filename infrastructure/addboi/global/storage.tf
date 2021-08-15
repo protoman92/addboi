@@ -6,17 +6,22 @@ module "asset" {
       Version = "2012-10-17"
       Statement = [
         {
-          Effect = "Allow"
-          Principal = {
-            AWS = ["arn:aws:iam::${var.account_id}:root"]
-          }
           Action = [
+            "s3:GetObject",
             "s3:PutObject"
           ]
+          Effect = "Allow"
+          Principal = {
+            AWS = [
+              "arn:aws:iam::${var.account_id}:root",
+              data.aws_iam_role.chatbot_production_iam_role.arn
+            ]
+          }
           Resource = [
             "arn:aws:s3:::$${bucket_name}",
             "arn:aws:s3:::$${bucket_name}/*"
           ]
+          Sid = "AssetPolicy"
         }
       ]
     }

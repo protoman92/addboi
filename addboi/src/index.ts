@@ -1,10 +1,10 @@
-import { config as AWSConfig } from "aws-sdk";
+import { config as AWSConfig, S3 } from "aws-sdk";
 import createBranches from "branch";
 import createCloudVisionClient from "client/cloud_vision";
 import createImageClient from "client/image_client";
 import createStateMachine from "client/state_machine";
 import express from "express";
-import { Context, ResolverArgs } from "interface";
+import { Context, LeafDependencies } from "interface";
 import {
   CONSTANTS,
   injectContextOnReceive,
@@ -19,63 +19,61 @@ import createLogger from "../../javascript-helper/client/logger";
 import serverless from "../../javascript-helper/serverless/aws";
 import { analyzeError } from "../../javascript-helper/utils";
 
-if (!!process.env.AWS_ACCESS_KEY_ID && !!process.env.AWS_SECRET_ACCESS_KEY) {
-  AWSConfig.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: "ap-southeast-1",
-  });
-} else {
-  AWSConfig.update({ region: "ap-southeast-1" });
-}
-
+AWSConfig.update({ region: "ap-southeast-1" });
 const logger = createLogger();
 
-const chatbotRouter = createChatbotRouter<Context, ResolverArgs>({
+const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
+  Context,
+  LeafDependencies
+>({
   getChatbotBootstrapArgs: ({ facebookClient, telegramClient }) => {
     const { contextDAO } = dynamoDBContextDAO<Context>();
+    const s3 = new S3({});
 
     return {
       contextDAO,
       createBranches,
+      s3,
       cloudVision: createCloudVisionClient(),
       formatErrorMessage: (error) => error.message,
-      imageClient: createImageClient({ facebookClient, telegramClient }),
+      imageClient: createImageClient({ facebookClient, s3, telegramClient }),
       leafSelectorType: "default",
+      messageProcessorMiddlewares: {
+        facebook: [
+          injectContextOnReceive({ contextDAO }),
+          saveContextOnSend({ contextDAO }),
+          setTypingIndicator({ client: facebookClient }),
+          saveFacebookUser({
+            contextDAO,
+            client: facebookClient,
+            saveUser: async (user) => {
+              return {
+                additionalContext: { platformUser: user },
+                targetUserID: user.id.toString(),
+              };
+            },
+          }),
+        ],
+        telegram: [
+          injectContextOnReceive({ contextDAO }),
+          saveContextOnSend({ contextDAO }),
+          setTypingIndicator({ client: telegramClient }),
+          saveTelegramUser({
+            contextDAO,
+            saveUser: async (user) => {
+              return {
+                additionalContext: { platformUser: user },
+                telegramUserID: user.id,
+              };
+            },
+          }),
+        ],
+      },
       onLeafCatchAll: async () => {},
       onWebhookError: async ({ error, ...meta }) => {
         logger.e({ error, meta, message: "Webhook error" });
       },
       stateMachine: createStateMachine(),
-      facebookMessageProcessorMiddlewares: [
-        injectContextOnReceive({ contextDAO }),
-        saveContextOnSend({ contextDAO }),
-        setTypingIndicator({ client: facebookClient }),
-        saveFacebookUser({
-          contextDAO,
-          client: facebookClient,
-          saveUser: async (user) => {
-            return {
-              additionalContext: { platformUser: user },
-              targetUserID: user.id.toString(),
-            };
-          },
-        }),
-      ],
-      telegramMessageProcessorMiddlewares: [
-        injectContextOnReceive({ contextDAO }),
-        saveContextOnSend({ contextDAO }),
-        setTypingIndicator({ client: telegramClient }),
-        saveTelegramUser({
-          contextDAO,
-          saveUser: async (user) => {
-            return {
-              additionalContext: { platformUser: user },
-              telegramUserID: user.id,
-            };
-          },
-        }),
-      ],
     };
   },
   webhookTimeout: 25000,
@@ -106,6 +104,27 @@ app.use(
     next(error);
   }
 );
+
+app.get("/internal/asset/*", async ({ url }, res, next) => {
+  try {
+    const objectKey = url.slice("/internal/asset/".length);
+
+    const { Body, ContentType } = await chatbotDependencies.s3
+      .getObject({
+        Bucket: process.env.AWS_ASSET_BUCKET_NAME || "",
+        Key: objectKey,
+      })
+      .promise();
+
+    if (!!ContentType) {
+      res.setHeader("Content-Type", ContentType);
+    }
+
+    res.send(Body);
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get("/internal/env", (...[, res]) => {
   res.json({ ...process.env, ...process.env2 });
