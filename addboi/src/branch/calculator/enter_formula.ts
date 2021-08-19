@@ -102,7 +102,7 @@ const _: BranchCreator = async ({ stateMachine }) => {
                           result,
                           variableName: CONSTANTS.VARIABLE_NAME_FIXED,
                         }),
-                        text: `Store as variable "${CONSTANTS.VARIABLE_NAME_FIXED}"`,
+                        text: `Store as "${CONSTANTS.VARIABLE_NAME_FIXED}"`,
                         type: "postback",
                       },
                       ...(nextVariableName === CONSTANTS.VARIABLE_NAME_FIXED
@@ -113,7 +113,7 @@ const _: BranchCreator = async ({ stateMachine }) => {
                                 result,
                                 variableName: nextVariableName,
                               }),
-                              text: `Store as variable "${nextVariableName}"`,
+                              text: `Store as "${nextVariableName}"`,
                               type: "postback" as const,
                             },
                           ]),

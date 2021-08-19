@@ -9,6 +9,7 @@ export * from "../../chatbot-engine/src/stream";
 
 export const CONSTANTS = {
   COMMAND_CALCULATE: "calculate",
+  COMMAND_SHOW_VARIABLES: "showvariables",
   COMMAND_START: "start",
   COUNT_RETRY: 3,
   DATE_FORM_IMAGE_NAME: "DD-MM-YY-HH-mm-ss",

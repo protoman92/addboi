@@ -1,6 +1,7 @@
 import { Calculator } from "client/state_machine";
 import { BranchCreator } from "interface";
 import {
+  CONSTANTS,
   createLeaf,
   getCrossPlatformOutput,
   NextResult,
@@ -9,6 +10,42 @@ import {
 
 const _: BranchCreator = async ({ stateMachine }) => {
   return {
+    showVariables: await createLeaf(async (observer) => ({
+      next: async ({
+        currentContext: { variables = {} },
+        input,
+        targetID,
+        targetPlatform,
+      }) => {
+        if (
+          input.type !== "command" ||
+          input.command !== CONSTANTS.COMMAND_SHOW_VARIABLES
+        ) {
+          return NextResult.FALLTHROUGH;
+        }
+
+        await observer.next({
+          targetID,
+          targetPlatform,
+          output: getCrossPlatformOutput({
+            telegram: [
+              {
+                content: {
+                  text: Object.entries(variables)
+                    .map(([key, value]) => {
+                      return `<b>${key}</b>: ${value}`;
+                    })
+                    .join("\n"),
+                  type: "text",
+                },
+              },
+            ],
+          })(targetPlatform),
+        });
+
+        return NextResult.BREAK;
+      },
+    })),
     storeResultAsVariable: await createLeaf(async (observer) => ({
       next: async ({
         currentContext: { variables },
