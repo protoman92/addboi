@@ -16,7 +16,7 @@ import {
 
 const _: BranchCreator = async ({ stateMachine }) => {
   function shouldComputeFormula({
-    currentContext: { inputFlow, variables },
+    currentContext: { variables },
     input,
   }: AmbiguousRequest<Context>) {
     const state: Calculator.State.COMPUTE_FORMULA =

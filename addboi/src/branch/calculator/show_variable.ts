@@ -7,7 +7,7 @@ import {
   Postback,
 } from "utils";
 
-const _: BranchCreator = async ({ stateMachine }) => {
+const _: BranchCreator = async ({}) => {
   function shouldShowVariables({ input }: AmbiguousRequest<Context>) {
     let destinationPage: number | undefined;
 
@@ -48,6 +48,24 @@ const _: BranchCreator = async ({ stateMachine }) => {
 
         const variableEntries = Object.entries(variables);
 
+        if (variableEntries.length === 0) {
+          await observer.next({
+            targetID,
+            targetPlatform,
+            output: [
+              {
+                content: {
+                  text:
+                    "You have not set any variable. You can do so after perfoming a calculation.",
+                  type: "text",
+                },
+              },
+            ],
+          });
+
+          return NextResult.BREAK;
+        }
+
         const maxPage = Math.floor(
           variableEntries.length / CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE
         );
@@ -63,7 +81,7 @@ const _: BranchCreator = async ({ stateMachine }) => {
 Showing at most ${CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE} variables (${
                     destinationPage * CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE +
                     1
-                  }-${Math.min(
+                  } to ${Math.min(
                     (destinationPage + 1) *
                       CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
                     variableEntries.length

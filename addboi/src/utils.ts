@@ -9,6 +9,7 @@ export * from "../../chatbot-engine/src/stream";
 
 export const CONSTANTS = {
   COMMAND_CALCULATE: "calculate",
+  COMMAND_RESET_VARIABLES: "resetvariables",
   COMMAND_SHOW_VARIABLES: "showvariables",
   COMMAND_START: "start",
   COUNT_SHOW_VARIABLE_PAGE_SIZE: 5,

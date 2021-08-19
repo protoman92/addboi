@@ -37,7 +37,7 @@ export function isComputableFormula(formula: string) {
     !!formula &&
     formula
       .replace(/\s*/g, "")
-      .match(/^(\d|\+|-|x|\*|\^|\/|:|\(|\)|\.|\!)+$/) != null
+      .match(/^(\d|\+|-|x|\*|\^|\/|:|\(|\)|\.|\!|%)+$/) != null
   );
 }
 
