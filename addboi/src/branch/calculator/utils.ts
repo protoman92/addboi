@@ -1,6 +1,7 @@
 import { Parser } from "expr-eval";
 import { Context } from "interface";
-import { roundAmount } from "utils";
+import { NumberToAlphabet } from "number-to-alphabet";
+import { CONSTANTS } from "utils";
 
 export function extractNumbersFromImageContents(contents: readonly string[]) {
   const numbers: number[] = [];
@@ -43,11 +44,31 @@ export function isComputableFormula(formula: string) {
 export function computeFormula(formula: string) {
   try {
     const cleanedInput = formula.replace(/(x|×)/gi, "*");
-    return roundAmount(Parser.evaluate(cleanedInput));
+    return Parser.evaluate(cleanedInput);
   } catch (error) {
     return undefined;
   }
 }
+
+/** Keep incrementing the variable name: a -> b -> c -> d etc */
+export const getNextVariableName = (() => {
+  const converter = new NumberToAlphabet();
+
+  return ({ variables = {} }: Context) => {
+    const currentVariableNames = Object.keys(variables).sort((lhs, rhs) => {
+      return converter.stringToNumber(rhs) - converter.stringToNumber(lhs);
+    });
+
+    if (currentVariableNames.length === 0) {
+      return CONSTANTS.VARIABLE_NAME_FIXED;
+    }
+
+    const lastVariableName = currentVariableNames[0];
+    const lastVariableAlphabet = converter.stringToNumber(lastVariableName);
+    const nextVariableAlphabet = lastVariableAlphabet + 1;
+    return converter.numberToString(nextVariableAlphabet);
+  };
+})();
 
 export function substituteVariablesIntoFormula({
   formula,

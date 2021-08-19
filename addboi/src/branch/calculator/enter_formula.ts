@@ -9,6 +9,7 @@ import {
 } from "utils";
 import {
   computeFormula,
+  getNextVariableName,
   isComputableFormula,
   substituteVariablesIntoFormula,
 } from "./utils";
@@ -78,6 +79,8 @@ const _: BranchCreator = async ({ stateMachine }) => {
           return NextResult.BREAK;
         }
 
+        const nextVariableName = getNextVariableName(request.currentContext);
+
         await observer.next({
           targetID,
           targetPlatform,
@@ -94,16 +97,26 @@ const _: BranchCreator = async ({ stateMachine }) => {
                 quickReplies: {
                   content: [
                     [
-                      // {
-                      //   payload: Postback.storeResultAsVariable(result),
-                      //   text: "Store as a variable",
-                      //   type: "postback",
-                      // },
                       {
-                        payload: Postback.storeResultAsFixedVariable(result),
+                        payload: Postback.Payload.storeResultAsVariable({
+                          result,
+                          variableName: CONSTANTS.VARIABLE_NAME_FIXED,
+                        }),
                         text: `Store as variable "${CONSTANTS.VARIABLE_NAME_FIXED}"`,
                         type: "postback",
                       },
+                      ...(nextVariableName === CONSTANTS.VARIABLE_NAME_FIXED
+                        ? []
+                        : [
+                            {
+                              payload: Postback.Payload.storeResultAsVariable({
+                                result,
+                                variableName: nextVariableName,
+                              }),
+                              text: `Store as variable "${nextVariableName}"`,
+                              type: "postback" as const,
+                            },
+                          ]),
                     ],
                   ],
                   type: "inline_markup",

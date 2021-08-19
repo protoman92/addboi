@@ -1,7 +1,6 @@
 import { Calculator } from "client/state_machine";
 import { BranchCreator } from "interface";
 import {
-  CONSTANTS,
   createLeaf,
   getCrossPlatformOutput,
   NextResult,
@@ -10,7 +9,7 @@ import {
 
 const _: BranchCreator = async ({ stateMachine }) => {
   return {
-    storeAsFixedVariable: await createLeaf(async (observer) => ({
+    storeResultAsVariable: await createLeaf(async (observer) => ({
       next: async ({
         currentContext: { variables },
         input,
@@ -18,12 +17,17 @@ const _: BranchCreator = async ({ stateMachine }) => {
         targetPlatform,
       }) => {
         let resultToStore: number | undefined;
+        let variableName: string | undefined;
 
         if (
           input.type !== "postback" ||
-          (resultToStore = Postback.getResultToStoreAsFixedVariable(
-            input.payload
-          )) == null
+          ({
+            result: resultToStore,
+            variableName,
+          } = Postback.Extract.getResultToStoreAsVariable(input.payload)) ==
+            null ||
+          resultToStore == null ||
+          !variableName
         ) {
           return NextResult.FALLTHROUGH;
         }
@@ -35,20 +39,17 @@ const _: BranchCreator = async ({ stateMachine }) => {
             inputFlow: {
               inputType: "calculator",
               state: await stateMachine.calculator.nextState(
-                Calculator.State.STORE_FIXED_VARIABLE
+                Calculator.State.STORE_VARIABLE
               ),
             },
-            variables: {
-              ...variables,
-              [CONSTANTS.VARIABLE_NAME_FIXED]: resultToStore,
-            },
+            variables: { ...variables, [variableName]: resultToStore },
           },
           output: getCrossPlatformOutput({
             telegram: [
               {
                 content: {
                   text: `
-Stored as variable "${CONSTANTS.VARIABLE_NAME_FIXED}". You can use it like <b>(${CONSTANTS.VARIABLE_NAME_FIXED} + 1) * 2</b>.
+Stored as variable "${variableName}". You can use it like <b>(${variableName} + 1) * 2</b>.
 `.trim(),
                   type: "text",
                 },

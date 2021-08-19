@@ -18,8 +18,11 @@ const _: BranchCreator = async ({}) => {
           output: [
             {
               content: {
-                text:
-                  "Welcome! Please type a formula for me to calculate (e.g. (1+2)*3/4).",
+                text: `
+Welcome! Please:
+- type a formula for me to calculate (e.g. (1+2)*3/4), or;
+- send me a picture to detect what I can calculate.
+`.trim(),
                 type: "text",
               },
             },
