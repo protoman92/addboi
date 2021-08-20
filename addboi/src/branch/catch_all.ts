@@ -1,7 +1,7 @@
 import { BranchCreator } from "interface";
 import { createLeaf, NextResult } from "utils";
 
-const _: BranchCreator = async ({}) => {
+const _: BranchCreator = async ({ content }) => {
   return {
     catchAll: await createLeaf(async (observer) => ({
       next: async function ({ input, targetID, targetPlatform }) {
@@ -15,8 +15,7 @@ const _: BranchCreator = async ({}) => {
           output: [
             {
               content: {
-                text:
-                  "Sorry, I don't know what to say. Could you try something else?",
+                text: content.get({ key: "catch-all__message" }),
                 type: "text",
               },
             },

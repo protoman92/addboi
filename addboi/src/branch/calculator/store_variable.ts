@@ -7,7 +7,7 @@ import {
   Postback,
 } from "utils";
 
-const _: BranchCreator = async ({ stateMachine }) => {
+const _: BranchCreator = async ({ content, stateMachine }) => {
   return {
     storeResultAsVariable: await createLeaf(async (observer) => ({
       next: async ({
@@ -48,9 +48,9 @@ const _: BranchCreator = async ({ stateMachine }) => {
             telegram: [
               {
                 content: {
-                  text: `
-Stored as variable "${variableName}". You can use it like <b>(${variableName} + 1) * 2</b>.
-`.trim(),
+                  text: content.get({
+                    key: "calculator__notification_success-variable-storage",
+                  }),
                   type: "text",
                 },
               },

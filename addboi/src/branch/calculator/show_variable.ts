@@ -7,7 +7,7 @@ import {
   Postback,
 } from "utils";
 
-const _: BranchCreator = async ({}) => {
+const _: BranchCreator = async ({ content }) => {
   function shouldShowVariables({ input }: AmbiguousRequest<Context>) {
     let destinationPage: number | undefined;
 
@@ -55,8 +55,9 @@ const _: BranchCreator = async ({}) => {
             output: [
               {
                 content: {
-                  text:
-                    "You have not set any variable. You can do so after perfoming a calculation.",
+                  text: content.get({
+                    key: "calculator__notification_no-variable-set",
+                  }),
                   type: "text",
                 },
               },
@@ -77,25 +78,33 @@ const _: BranchCreator = async ({}) => {
             telegram: [
               {
                 content: {
-                  text: `
-Showing at most ${CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE} variables (${
-                    destinationPage * CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE +
-                    1
-                  } to ${Math.min(
-                    (destinationPage + 1) *
-                      CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
-                    variableEntries.length
-                  )}):
-${variableEntries
-  .slice(
-    destinationPage * CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
-    (destinationPage + 1) * CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE
-  )
-  .map(([key, value]) => {
-    return `<b>${key}</b>: ${value}`;
-  })
-  .join("\n")}
-`,
+                  text: content.get({
+                    key: "calculator__title_show-variable-page",
+                    noEscape: true,
+                    replacements: {
+                      end: Math.min(
+                        (destinationPage + 1) *
+                          CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
+                        variableEntries.length
+                      ),
+                      maxCount: CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
+                      start:
+                        destinationPage *
+                          CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE +
+                        1,
+                      variables: variableEntries
+                        .slice(
+                          destinationPage *
+                            CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE,
+                          (destinationPage + 1) *
+                            CONSTANTS.COUNT_SHOW_VARIABLE_PAGE_SIZE
+                        )
+                        .map(([key, value]) => {
+                          return `<b>${key}</b>: ${value}`;
+                        })
+                        .join("\n"),
+                    },
+                  }),
                   type: "text",
                 },
                 quickReplies: {
@@ -107,7 +116,9 @@ ${variableEntries
                               payload: Postback.Payload.goToVariablePage(
                                 destinationPage - 1
                               ),
-                              text: "Previous",
+                              text: content.get({
+                                key: "calculator__title_show-variable-previous",
+                              }),
                               type: "postback" as const,
                             },
                           ]
@@ -118,7 +129,9 @@ ${variableEntries
                               payload: Postback.Payload.goToVariablePage(
                                 destinationPage + 1
                               ),
-                              text: "Next",
+                              text: content.get({
+                                key: "calculator__title_show-variable-next",
+                              }),
                               type: "postback" as const,
                             },
                           ]

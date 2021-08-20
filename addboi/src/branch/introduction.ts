@@ -1,7 +1,7 @@
 import { BranchCreator } from "interface";
 import { CONSTANTS, createLeaf, NextResult } from "utils";
 
-const _: BranchCreator = async ({}) => {
+const _: BranchCreator = async ({ content }) => {
   return {
     introduction: await createLeaf(async (observer) => ({
       next: async function ({ input, targetID, targetPlatform }) {
@@ -18,11 +18,7 @@ const _: BranchCreator = async ({}) => {
           output: [
             {
               content: {
-                text: `
-Welcome! Please:
-- type a formula for me to calculate (e.g. (1+2)*3/4), or;
-- send me a picture to detect what I can calculate.
-`.trim(),
+                text: content.get({ key: "introduction__message" }),
                 type: "text",
               },
             },

@@ -11,6 +11,7 @@ import { extractNumbersFromImageContents } from "./utils";
 
 const _: BranchCreator = async ({
   cloudVision,
+  content,
   imageClient,
   telegramClient,
 }) => {
@@ -80,8 +81,9 @@ const _: BranchCreator = async ({
             output: [
               {
                 content: {
-                  text:
-                    "Looks like you sent a compressed image instead of a document. The scan result will not be as accurate.",
+                  text: content.get({
+                    key: "calculator__notification_compressed-image-quality",
+                  }),
                   type: "text",
                 },
               },
@@ -109,8 +111,9 @@ const _: BranchCreator = async ({
           output: [
             {
               content: {
-                text:
-                  "Is this what you wanted to calculate? If not, you can copy the below text, edit it and send as a new formula",
+                text: content.get({
+                  key: "calculator__notification_scan-image-correctness",
+                }),
                 type: "text",
               },
             },
@@ -124,7 +127,9 @@ const _: BranchCreator = async ({
                         {
                           payload:
                             CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE,
-                          text: "Yes",
+                          text: content.get({
+                            key: "calculator__title_scan-image-confirm-formula",
+                          }),
                           type: "postback",
                         },
                       ],

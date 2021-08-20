@@ -14,7 +14,7 @@ import {
   substituteVariablesIntoFormula,
 } from "./utils";
 
-const _: BranchCreator = async ({ stateMachine }) => {
+const _: BranchCreator = async ({ content, stateMachine }) => {
   function shouldComputeFormula({
     currentContext: { variables },
     input,
@@ -72,7 +72,14 @@ const _: BranchCreator = async ({ stateMachine }) => {
             targetID,
             targetPlatform,
             output: [
-              { content: { text: "Not a valid formula", type: "text" } },
+              {
+                content: {
+                  text: content.get({
+                    key: "calculator__notification_not-valid-formula",
+                  }),
+                  type: "text",
+                },
+              },
             ],
           });
 
@@ -102,7 +109,12 @@ const _: BranchCreator = async ({ stateMachine }) => {
                           result,
                           variableName: CONSTANTS.VARIABLE_NAME_FIXED,
                         }),
-                        text: `Store as "${CONSTANTS.VARIABLE_NAME_FIXED}"`,
+                        text: content.get({
+                          key: "calculator__command_store-as-variable",
+                          replacements: {
+                            variable: CONSTANTS.VARIABLE_NAME_FIXED,
+                          },
+                        }),
                         type: "postback",
                       },
                       ...(nextVariableName === CONSTANTS.VARIABLE_NAME_FIXED
@@ -113,7 +125,10 @@ const _: BranchCreator = async ({ stateMachine }) => {
                                 result,
                                 variableName: nextVariableName,
                               }),
-                              text: `Store as "${nextVariableName}"`,
+                              text: content.get({
+                                key: "calculator__command_store-as-variable",
+                                replacements: { variable: nextVariableName },
+                              }),
                               type: "postback" as const,
                             },
                           ]),

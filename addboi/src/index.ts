@@ -1,6 +1,7 @@
 import { config as AWSConfig, S3 } from "aws-sdk";
 import createBranches from "branch";
 import createCloudVisionClient from "client/cloud_vision";
+import createContentClient from "client/content";
 import createImageClient from "client/image_client";
 import createStateMachine from "client/state_machine";
 import express from "express";
@@ -35,6 +36,7 @@ const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
       createBranches,
       s3,
       cloudVision: createCloudVisionClient(),
+      content: createContentClient(),
       formatErrorMessage: (error) => error.message,
       imageClient: createImageClient({ facebookClient, s3, telegramClient }),
       leafSelectorType: "default",

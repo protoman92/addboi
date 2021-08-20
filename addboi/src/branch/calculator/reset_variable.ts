@@ -1,7 +1,7 @@
 import { BranchCreator } from "interface";
 import { CONSTANTS, createLeaf, NextResult } from "utils";
 
-const _: BranchCreator = async ({}) => {
+const _: BranchCreator = async ({ content }) => {
   return {
     resetVariables: await createLeaf(async (observer) => ({
       next: async ({ input, targetID, targetPlatform }) => {
@@ -17,7 +17,14 @@ const _: BranchCreator = async ({}) => {
           targetPlatform,
           additionalContext: { variables: {} },
           output: [
-            { content: { text: "Succesfully reset variables!", type: "text" } },
+            {
+              content: {
+                text: content.get({
+                  key: "calculator__notification_success-reset-variable",
+                }),
+                type: "text",
+              },
+            },
           ],
         });
 

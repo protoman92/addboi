@@ -25,6 +25,7 @@ export interface LeafDependencies extends DefaultLeafDependencies<Context> {
   readonly cloudVision: ReturnType<
     typeof import("client/cloud_vision")["default"]
   >;
+  readonly content: ReturnType<typeof import("client/content")["default"]>;
   readonly imageClient: ReturnType<
     typeof import("client/image_client")["default"]
   >;

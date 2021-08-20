@@ -1,0 +1,23 @@
+{
+  "calculator__command_store-as-variable": "Store as \"{{variable}}\"",
+  "calculator__notification_compressed-image-quality": "Looks like you sent a compressed image instead of a document. The scan result will not be as accurate.",
+  "calculator__notification_no-variable-set": "You have not set any variable. You can do so after perfoming a calculation.",
+  "calculator__notification_not-valid-formula": [
+    "This is not a valid formula",
+    "Seems that the formula is wrong?",
+    "I'm not able to calculate this. Could you try something else?",
+    "Could you double-check this formula? I don't understand it"
+  ],
+  "calculator__notification_scan-image-correctness": "Is this what you wanted to calculate? If not, you can copy the below text, edit it and send as a new formula",
+  "calculator__notification_success-reset-variable": "Succesfully reset variables!",
+  "calculator__notification_success-variable-storage": "Stored as variable \"{{variable}}\". You can use it like <b>({{variable}} + 1) * 2</b>.",
+  "calculator__title_scan-image-confirm-formula": "Yes",
+  "calculator__title_show-variable-next": "Next",
+  "calculator__title_show-variable-page": "Showing at most {{maxCount}} variables ({{start}} to {{end}}):\n\n{{variables}}",
+  "calculator__title_show-variable-previous": "Previous",
+  "catch-all__message": [
+    "Sorry, I don't know what to say. Could you try something else?",
+    "Apologies, I don't understand what you said. Please try something else"
+  ],
+  "introduction__message": "Welcome! Please:\n- type a formula for me to calculate (e.g. (1+2)*3/4), or;\n- send me a picture to detect what I can calculate."
+}
