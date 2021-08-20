@@ -48,14 +48,17 @@ export namespace Postback {
     }
 
     export function getResultToStoreAsVariable(payload: string) {
-      const { result: rawResult = "", variableName = undefined } =
+      const { resultToStore = "", variableName = undefined } =
         payload.match(
           new RegExp(
-            `^${CONSTANTS.POSTBACK_STORE_RESULT_AS_VARIABLE}\\|(?<variableName>.*)\\|(?<result>.*)$`
+            `^${CONSTANTS.POSTBACK_STORE_RESULT_AS_VARIABLE}\\|(?<variableName>.*)\\|(?<resultToStore>.*)$`
           )
         )?.groups ?? {};
 
-      return { variableName, result: tryValidateNumber(parseFloat(rawResult)) };
+      return {
+        variableName,
+        resultToStore: tryValidateNumber(parseFloat(resultToStore)),
+      };
     }
   }
 

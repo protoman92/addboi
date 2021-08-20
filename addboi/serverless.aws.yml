@@ -15,8 +15,8 @@ provider:
   timeout: 30
   usagePlan:
     throttle:
-      burstLimit: 20
-      rateLimit: 10
+      burstLimit: 10
+      rateLimit: 5
 functions:
   core:
     handler: src/index.handler

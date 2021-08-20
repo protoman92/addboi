@@ -1,7 +1,7 @@
 import { Parser } from "expr-eval";
 import { Context } from "interface";
 import { NumberToAlphabet } from "number-to-alphabet";
-import { CONSTANTS } from "utils";
+import { CONSTANTS, tryValidateNumber } from "utils";
 
 export function extractNumbersFromImageContents(contents: readonly string[]) {
   const numbers: number[] = [];
@@ -30,15 +30,6 @@ export function extractNumbersFromImageContents(contents: readonly string[]) {
   }
 
   return numbers;
-}
-
-export function isComputableFormula(formula: string) {
-  return (
-    !!formula &&
-    formula
-      .replace(/\s*/g, "")
-      .match(/^(\d|\+|-|x|\*|\^|\/|:|\(|\)|\.|\!|%)+$/) != null
-  );
 }
 
 export function computeFormula(formula: string) {
@@ -77,13 +68,34 @@ export const getNextVariableName = (() => {
   };
 })();
 
+export function isComputableFormula(args: string) {
+  return (
+    !!args &&
+    args.replace(/\s*/g, "").match(/^(\d|\+|-|x|\*|\^|\/|:|\(|\)|\.|\!|%)+$/) !=
+      null
+  );
+}
+
+export function getVariableAssignment(
+  args: string
+): Readonly<{ resultToStore?: number; variableName?: string }> {
+  const { resultToStore = "", variableName } =
+    args
+      .trim()
+      .match(
+        /^(?<variableName>[a-z]([a-z]|\d)*)\s*=\s*(?<resultToStore>\d+(.\d+)?)$/
+      )?.groups ?? {};
+
+  return {
+    variableName,
+    resultToStore: tryValidateNumber(parseFloat(resultToStore)),
+  };
+}
+
 export function substituteVariablesIntoFormula({
   formula,
   variables = {},
-}: Readonly<{
-  formula: string;
-  variables?: Context["variables"];
-}>) {
+}: Readonly<{ formula: string; variables?: Context["variables"] }>) {
   /**
    * Make sure the variables with the longest names are substituted first to
    * avoid the situation where short variables are mistakenly processed (e.g.

@@ -3,6 +3,7 @@ import {
   computeFormula,
   extractNumbersFromImageContents,
   getNextVariableName,
+  getVariableAssignment,
 } from "./utils";
 
 describe("Utilities", () => {
@@ -44,5 +45,39 @@ describe("Utilities", () => {
     expect(computeFormula("1+2x3*4:5X6%")).toEqual(
       1 + (((2 * 3 * 4) / 5) * 6) / 100
     );
+  });
+  it("Getting variable assignment should work", () => {
+    // Setup
+    // When
+    // Then
+    expect(getVariableAssignment("a=1")).toEqual({
+      resultToStore: 1,
+      variableName: "a",
+    });
+
+    expect(getVariableAssignment("abc = 1.1")).toEqual({
+      resultToStore: 1.1,
+      variableName: "abc",
+    });
+
+    expect(getVariableAssignment(" abcd =112.121 ")).toEqual({
+      resultToStore: 112.121,
+      variableName: "abcd",
+    });
+
+    expect(getVariableAssignment(" abc = 1.1a ")).toEqual({
+      resultToStore: undefined,
+      variableName: undefined,
+    });
+
+    expect(getVariableAssignment(" a1c = 120 ")).toEqual({
+      resultToStore: 120,
+      variableName: "a1c",
+    });
+
+    expect(getVariableAssignment(" a12 = 120 ")).toEqual({
+      resultToStore: 120,
+      variableName: "a12",
+    });
   });
 });

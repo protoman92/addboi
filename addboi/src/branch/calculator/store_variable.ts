@@ -1,36 +1,55 @@
 import { Calculator } from "client/state_machine";
-import { BranchCreator } from "interface";
+import { AmbiguousRequest, BranchCreator, Context } from "interface";
 import {
   createLeaf,
   getCrossPlatformOutput,
   NextResult,
   Postback,
 } from "utils";
+import { getVariableAssignment } from "./utils";
 
 const _: BranchCreator = async ({ content, stateMachine }) => {
+  function shouldStoreVariable({ input }: AmbiguousRequest<Context>) {
+    let resultToStore: number | undefined;
+    let variableName: string | undefined;
+
+    if (
+      input.type === "postback" &&
+      ({
+        resultToStore,
+        variableName,
+      } = Postback.Extract.getResultToStoreAsVariable(input.payload)) == null
+    ) {
+    } else if (
+      input.type === "text" &&
+      ({ resultToStore, variableName } = getVariableAssignment(input.text)) ==
+        null
+    ) {
+    }
+
+    return { resultToStore, variableName };
+  }
+
   return {
     storeResultAsVariable: await createLeaf(async (observer) => ({
-      next: async ({
-        currentContext: { variables },
-        input,
-        targetID,
-        targetPlatform,
-      }) => {
+      next: async (request) => {
         let resultToStore: number | undefined;
         let variableName: string | undefined;
 
         if (
-          input.type !== "postback" ||
-          ({
-            result: resultToStore,
-            variableName,
-          } = Postback.Extract.getResultToStoreAsVariable(input.payload)) ==
+          ({ resultToStore, variableName } = shouldStoreVariable(request)) ==
             null ||
           resultToStore == null ||
           !variableName
         ) {
           return NextResult.FALLTHROUGH;
         }
+
+        const {
+          currentContext: { variables },
+          targetID,
+          targetPlatform,
+        } = request;
 
         await observer.next({
           targetID,
@@ -50,6 +69,7 @@ const _: BranchCreator = async ({ content, stateMachine }) => {
                 content: {
                   text: content.get({
                     key: "calculator__notification_success-variable-storage",
+                    replacements: { variable: variableName },
                   }),
                   type: "text",
                 },
