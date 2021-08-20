@@ -65,6 +65,7 @@ const _: BranchCreator = async ({
           imageURLToScan = fileURL;
         } else if (
           request.input.type === "text" &&
+          request.input.text.startsWith("http") &&
           validator.isURL(request.input.text)
         ) {
           imageURLToScan = request.input.text;

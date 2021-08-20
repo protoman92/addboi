@@ -43,7 +43,14 @@ export function isComputableFormula(formula: string) {
 
 export function computeFormula(formula: string) {
   try {
-    const cleanedInput = formula.replace(/(x|×)/gi, "*");
+    const cleanedInput = formula
+      /** Replace multiplication sign */
+      .replace(/(x|×)/gi, "*")
+      /** Replace division sign */
+      .replace(/:/g, "/")
+      /** Replace percentable sign */
+      .replace(/(\d+)(%)/g, "$1 / 100");
+
     return Parser.evaluate(cleanedInput);
   } catch (error) {
     return undefined;

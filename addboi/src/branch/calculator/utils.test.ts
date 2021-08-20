@@ -1,5 +1,9 @@
-import { extractNumbersFromImageContents, getNextVariableName } from "./utils";
 import { NumberToAlphabet } from "number-to-alphabet";
+import {
+  computeFormula,
+  extractNumbersFromImageContents,
+  getNextVariableName,
+} from "./utils";
 
 describe("Utilities", () => {
   it("Extract numbers of image contents should work", () => {
@@ -33,6 +37,12 @@ describe("Utilities", () => {
 
     expect(getNextVariableName({ variables: complexVariables })).toEqual(
       n2aConverter.numberToString(10000)
+    );
+  });
+
+  it("Computing formula should work", () => {
+    expect(computeFormula("1+2x3*4:5X6%")).toEqual(
+      1 + (((2 * 3 * 4) / 5) * 6) / 100
     );
   });
 });
