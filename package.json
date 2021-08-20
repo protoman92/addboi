@@ -3,6 +3,7 @@
   "devDependencies": {
     "babel-jest": "*",
     "cross-env": "7.0.2",
+    "esbuild-loader": "2.15.1",
     "fork-ts-checker-webpack-plugin": "4.1.4",
     "nodemon": "*",
     "serverless": "*",

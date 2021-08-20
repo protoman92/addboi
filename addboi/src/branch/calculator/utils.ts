@@ -50,21 +50,29 @@ export function computeFormula(formula: string) {
 
 /** Keep incrementing the variable name: a -> b -> c -> d etc */
 export const getNextVariableName = (() => {
-  const converter = new NumberToAlphabet();
+  const n2a = new NumberToAlphabet();
 
   return ({ variables = {} }: Context) => {
-    const currentVariableNames = Object.keys(variables).sort((lhs, rhs) => {
-      return converter.stringToNumber(rhs) - converter.stringToNumber(lhs);
-    });
+    const sortedVariables = Object.entries(variables)
+      .sort(([lhs], [rhs]) => {
+        return lhs.localeCompare(rhs);
+      })
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {} as typeof variables);
 
-    if (currentVariableNames.length === 0) {
-      return CONSTANTS.VARIABLE_NAME_FIXED;
+    let variableName = CONSTANTS.VARIABLE_NAME_FIXED;
+    let variableIndex = n2a.stringToNumber(variableName);
+
+    while (
+      !!(variableName = n2a.numberToString(variableIndex)) &&
+      sortedVariables[variableName] != null
+    ) {
+      variableIndex += 1;
     }
 
-    const lastVariableName = currentVariableNames[0];
-    const lastVariableAlphabet = converter.stringToNumber(lastVariableName);
-    const nextVariableAlphabet = lastVariableAlphabet + 1;
-    return converter.numberToString(nextVariableAlphabet);
+    return variableName;
   };
 })();
 
@@ -92,7 +100,7 @@ export function getVariableAssignment(
   };
 }
 
-export function substituteVariablesIntoFormula({
+export function substituteVariables({
   formula,
   variables = {},
 }: Readonly<{ formula: string; variables?: Context["variables"] }>) {

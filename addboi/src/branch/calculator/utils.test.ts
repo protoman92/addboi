@@ -27,7 +27,8 @@ describe("Utilities", () => {
     // Then
     expect(getNextVariableName({})).toEqual("a");
     expect(getNextVariableName({ variables: { a: 1 } })).toEqual("b");
-    expect(getNextVariableName({ variables: { ab: 2, aa: 1 } })).toEqual("ac");
+    expect(getNextVariableName({ variables: { ab: 2, aa: 1 } })).toEqual("a");
+    expect(getNextVariableName({ variables: { c: 2, a: 1 } })).toEqual("b");
 
     const n2aConverter = new NumberToAlphabet();
     const complexVariables: Record<string, number> = {};

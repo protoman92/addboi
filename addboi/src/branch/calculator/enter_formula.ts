@@ -11,7 +11,7 @@ import {
   computeFormula,
   getNextVariableName,
   isComputableFormula,
-  substituteVariablesIntoFormula,
+  substituteVariables,
 } from "./utils";
 
 const _: BranchCreator = async ({ content, stateMachine }) => {
@@ -34,7 +34,7 @@ const _: BranchCreator = async ({ content, stateMachine }) => {
 
     if (
       input.type === "text" &&
-      !!(formula = substituteVariablesIntoFormula({
+      !!(formula = substituteVariables({
         variables,
         formula: input.text,
       })) &&
