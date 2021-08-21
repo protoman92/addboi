@@ -19,5 +19,5 @@
     "Sorry, I don't know what to say. Could you try something else?",
     "Apologies, I don't understand what you said. Please try something else"
   ],
-  "introduction__message": "Welcome! Please:\n- type a formula for me to calculate (e.g. (1+2)*3/4), or;\n- send me a picture to detect what I can calculate."
+  "introduction__message": "Welcome! Please:\n- type a formula for me to calculate (e.g. \"(1+2)*3/4\");\n- assign a variable with the syntax \"a=1\"."
 }

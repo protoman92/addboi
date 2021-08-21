@@ -49,11 +49,11 @@ const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
           saveFacebookUser({
             contextDAO,
             client: facebookClient,
+            isEnabled: async ({ currentContext: { platformUser } }) => {
+              return platformUser == null;
+            },
             saveUser: async (user) => {
-              return {
-                additionalContext: { platformUser: user },
-                targetUserID: user.id.toString(),
-              };
+              return { additionalContext: { platformUser: user } };
             },
           }),
         ],
@@ -63,11 +63,11 @@ const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
           setTypingIndicator({ client: telegramClient }),
           saveTelegramUser({
             contextDAO,
+            isEnabled: async ({ currentContext: { platformUser } }) => {
+              return platformUser == null;
+            },
             saveUser: async (user) => {
-              return {
-                additionalContext: { platformUser: user },
-                telegramUserID: user.id,
-              };
+              return { additionalContext: { platformUser: user } };
             },
           }),
         ],

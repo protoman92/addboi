@@ -16,35 +16,14 @@ const _: BranchCreator = async ({
   telegramClient,
 }) => {
   return {
-    confirmYes: await createLeaf(async (observer) => ({
-      next: async ({ currentContext, input, targetID, targetPlatform }) => {
-        if (
-          input.type !== "postback" ||
-          input.payload !== CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE ||
-          currentContext?.inputFlow?.state !== Calculator.State.SCAN_IMAGE
-        ) {
-          return NextResult.FALLTHROUGH;
-        }
-
-        await observer.next({
-          targetID,
-          targetPlatform,
-          additionalContext: {
-            inputFlow: {
-              formulaToCompute: currentContext.inputFlow.formulaToCompute,
-              state: Calculator.State.COMPUTE_FORMULA,
-              inputType: "calculator",
-            },
-          },
-          output: [],
-        });
-
-        return NextResult.BREAK;
-      },
-    })),
     scanImage: await createLeaf(async (observer) => ({
       next: async (request) => {
         const { targetID, targetPlatform } = request;
+
+        if (!CONSTANTS.ADMIN_PLATFORM_USER_ID[targetID]) {
+          return NextResult.FALLTHROUGH;
+        }
+
         let telegramFileID: string | undefined;
         let imageURLToScan: string | undefined;
         let isImageCompressed: boolean | undefined;
@@ -140,6 +119,32 @@ const _: BranchCreator = async ({
               ],
             })(targetPlatform),
           ],
+        });
+
+        return NextResult.BREAK;
+      },
+    })),
+    confirmYes: await createLeaf(async (observer) => ({
+      next: async ({ currentContext, input, targetID, targetPlatform }) => {
+        if (
+          input.type !== "postback" ||
+          input.payload !== CONSTANTS.POSTBACK_CONFIRM_CALCULATION_FROM_IMAGE ||
+          currentContext?.inputFlow?.state !== Calculator.State.SCAN_IMAGE
+        ) {
+          return NextResult.FALLTHROUGH;
+        }
+
+        await observer.next({
+          targetID,
+          targetPlatform,
+          additionalContext: {
+            inputFlow: {
+              formulaToCompute: currentContext.inputFlow.formulaToCompute,
+              state: Calculator.State.COMPUTE_FORMULA,
+              inputType: "calculator",
+            },
+          },
+          output: [],
         });
 
         return NextResult.BREAK;

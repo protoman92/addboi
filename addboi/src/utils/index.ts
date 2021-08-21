@@ -10,6 +10,10 @@ export { getContent };
 import getContent from "./get_content";
 
 export const CONSTANTS = {
+  ADMIN_PLATFORM_USER_ID: Object.freeze({ "105257134": true }) as Record<
+    string,
+    boolean
+  >,
   COMMAND_CALCULATE: "calculate",
   COMMAND_RESET_VARIABLES: "resetvariables",
   COMMAND_SHOW_VARIABLES: "showvariables",
