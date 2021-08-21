@@ -34,6 +34,7 @@ const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
     return {
       contextDAO,
       createBranches,
+      logger,
       s3,
       cloudVision: createCloudVisionClient(),
       content: createContentClient(),
@@ -82,6 +83,11 @@ const { chatbotDependencies, chatbotRouter } = createChatbotRouter<
 });
 
 const app = express();
+
+app.get("/", async (...[, res]) => {
+  res.sendStatus(204);
+});
+
 app.use(chatbotRouter);
 
 app.use(

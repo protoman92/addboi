@@ -1,0 +1,24 @@
+service: addboi-cronjob
+plugins:
+  - serverless-webpack
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: false
+  warmer:
+    development: rate(10 minutes)
+    local: rate(1 day)
+    production: rate(1 minute)
+    test: rate(1 minute)
+provider:
+  name: aws
+  runtime: nodejs12.x
+  logRetentionInDays: 7
+  region: ap-southeast-1
+  stage: ${env:ENVIRONMENT}
+  timeout: 300
+functions:
+  warmer:
+    handler: index.warmer
+    events:
+      - schedule: ${self:custom.warmer.${self:provider.stage}}

@@ -16,17 +16,14 @@ const getServerlessConfig = require("../javascript-helper/serverless/aws/webpack
 const { infrastructure } = parseArgs(process.argv);
 const { ENVIRONMENT = "local" } = process.env;
 
-const {
-  resolve: serverlessResolve = {},
-  ...serverlessConfig
-} = getServerlessConfig({
+const serverlessConfig = getServerlessConfig({
   infrastructure,
   slsw,
   dirname: __dirname,
   serverOverrides: { entry: path.join(__dirname, "src", "index.ts") },
 });
 
-const { ...extraEnv } = constructEnvVars({
+const extraEnv = constructEnvVars({
   additionalEnv: {
     ...dotenv.config({
       encoding: "utf-8",
@@ -109,9 +106,7 @@ module.exports = merge(
       }),
     ],
     resolve: {
-      ...serverlessResolve,
       alias: {
-        ...serverlessResolve.alias,
         ...rootFiles
           .map(path.parse)
           .reduce(

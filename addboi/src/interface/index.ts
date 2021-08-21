@@ -2,6 +2,7 @@ import { S3 } from "aws-sdk";
 import { Calculator } from "client/state_machine";
 import { DefaultLeafDependencies } from "../../../chatbot-engine/src/bootstrap/interface";
 import { Branch } from "../../../chatbot-engine/src/type";
+import { Logger } from "../../../javascript-helper/interface";
 export * from "../../../chatbot-engine/src/type";
 
 declare global {
@@ -29,6 +30,7 @@ export interface LeafDependencies extends DefaultLeafDependencies<Context> {
   readonly imageClient: ReturnType<
     typeof import("client/image_client")["default"]
   >;
+  readonly logger: Logger;
   readonly s3: S3;
   readonly stateMachine: ReturnType<
     typeof import("client/state_machine")["default"]

@@ -25,6 +25,7 @@
   "resolutions": {
     "@types/express-rate-limit": "5.1.0",
     "@types/webpack": "4.41.30",
+    "axios": "0.21.1",
     "babel-jest": "27.0.6",
     "express": "4.17.1",
     "google-auth-library": "7.6.1",
@@ -51,6 +52,7 @@
     "chatbot-engine",
     "chatbot-engine/src/bootstrap",
     "cloud_vision",
+    "cronjob",
     "javascript-helper"
   ]
 }

@@ -46,7 +46,11 @@ const _: BranchCreator = async ({ content }) => {
           targetPlatform,
         } = request;
 
-        const variableEntries = Object.entries(variables);
+        const variableEntries = Object.entries(variables).sort(
+          ([lhs], [rhs]) => {
+            return lhs.localeCompare(rhs);
+          }
+        );
 
         if (variableEntries.length === 0) {
           await observer.next({

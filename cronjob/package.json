@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "axios": "*"
+  },
+  "name": "cronjob",
+  "scripts": {
+    "deploy:prod": "cross-env ENVIRONMENT=production sls deploy --config serverless.aws.yml"
+  },
+  "version": "1.0.0"
+}
